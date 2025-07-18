@@ -1,6 +1,24 @@
-<h1>{{ question.question_text }} </h1>
-<ul>
-    {% for choice in question.choice_set.all %}
-    <li> {{ choice.text }} </li>
-    {% endfor%}
-</ul>
+<form action = "{% url 'pools:vote' question.id %}" method="post">
+{% comment %} its goes torough the vote url and .id creates a correct vote route banauxa and securely data lai post garxa  {% endcomment %}
+
+{% csrf_token %}
+{% comment %} prvents malicious form submission {% endcomment %}
+
+<filedset>
+    <legend><h1>{{question.question_text}}</h1></legend>
+    {% comment %} displays the main question {% endcomment %}
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    {% comment %} displays the error message if not any question found {% endcomment %}
+    {% for choice in question.choice.set.all %}
+
+    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+    {% comment %} creates a radio button for each choice {% endcomment %}
+
+    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+    {% comment %}  display the actual  text of the choice {% endcomment %}
+
+    {% endfor %}
+
+</filedset>
+<input type="submit" value="Vote">
+</form>
