@@ -1,13 +1,36 @@
 {% load static %}
-
-<link rel="stylesheet" href="{% static 'pools/style.css' %}">
-
-{% if latest_question_list%}
-<ul>
-    {% for question in latest_question_list %}
-   <li><a href="{% url 'pools:detail' question.id %}"> {{ question.question_text}}</a></li>
-    {% endfor %}
-    </ul>
-    {% else %}
-    <p>No pools are available.</p>
-    {%endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Polls Index</title>
+    <link rel="stylesheet" href="{% static 'pools/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Available Polls</h1>
+            
+            {% if latest_question_list %}
+                <ul class="list-unstyled">
+                    {% for question in latest_question_list %}
+                        <li class="list-item">
+                            <a href="{% url 'pools:detail' question.id %}" class="btn btn-secondary">
+                                <i class="fas fa-poll-h"></i> {{ question.question_text }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="empty-state">
+                    <i class="far fa-folder-open"></i>
+                    <p>No polls are available right now.</p>
+                    <a href="#" class="btn mt-3">Create New Poll</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

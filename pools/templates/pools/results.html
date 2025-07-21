@@ -1,9 +1,46 @@
-<h1>{{ question.question_text }}</h1>
-
-<ul>
-{% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
-{% endfor %}
-</ul>
-
-<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Results: {{ question.question_text }}</title>
+    <link rel="stylesheet" href="{% static 'pools/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Results: {{ question.question_text }}</h1>
+            
+            <ul class="list-unstyled">
+                {% for choice in question.choice_set.all %}
+                    <li class="list-item">
+                        <div class="d-flex justify-content-between">
+                            <span>{{ choice.choice_text }}</span>
+                            <span class="vote-count">{{ choice.votes }} vote{{ choice.votes|pluralize }}</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: {% widthratio choice.votes question.total_votes 100 %}%"></div>
+                        </div>
+                    </li>
+                {% empty %}
+                    <div class="empty-state">
+                        <i class="far fa-frown"></i>
+                        <p>No results available for this poll.</p>
+                    </div>
+                {% endfor %}
+            </ul>
+            
+            <div class="text-center mt-3">
+                <a href="{% url 'pools:detail' question.id %}" class="btn">
+                    <i class="fas fa-redo"></i> Vote Again
+                </a>
+                <a href="{% url 'pools:index' %}" class="btn btn-secondary">
+                    <i class="fas fa-poll-h"></i> Back to Polls
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

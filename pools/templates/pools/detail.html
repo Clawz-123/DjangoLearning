@@ -1,24 +1,50 @@
-<form action = "{% url 'pools:vote' question.id %}" method="post">
-{% comment %} its goes torough the vote url and .id creates a correct vote route banauxa and securely data lai post garxa  {% endcomment %}
-
-{% csrf_token %}
-{% comment %} prvents malicious form submission {% endcomment %}
-
-<filedset>
-    <legend><h1>{{question.question_text}}</h1></legend>
-    {% comment %} displays the main question {% endcomment %}
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    {% comment %} displays the error message if not any question found {% endcomment %}
-    {% for choice in question.choice.set.all %}
-
-    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-    {% comment %} creates a radio button for each choice {% endcomment %}
-
-    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
-    {% comment %}  display the actual  text of the choice {% endcomment %}
-
-    {% endfor %}
-
-</filedset>
-<input type="submit" value="Vote">
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ question.question_text }}</title>
+    <link rel="stylesheet" href="{% static 'pools/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>{{ question.question_text }}</h1>
+            
+            {% if error_message %}
+                <div class="alert alert-danger">{{ error_message }}</div>
+            {% endif %}
+            
+            <form action="{% url 'pools:vote' question.id %}" method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    {% for choice in question.choice_set.all %}
+                        <label class="radio-label">
+                            <input 
+                                type="radio" 
+                                name="choice" 
+                                id="choice{{ forloop.counter }}" 
+                                value="{{ choice.id }}" 
+                                class="radio-input"
+                            >
+                            {{ choice.choice_text }}
+                        </label>
+                    {% empty %}
+                        <div class="empty-state">
+                            <i class="far fa-frown"></i>
+                            <p>No choices available for this poll.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <button type="submit" class="btn btn-block">
+                    <i class="fas fa-vote-yea"></i> Submit Vote
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
